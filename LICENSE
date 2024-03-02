@@ -371,3 +371,70 @@ Exhibit B - "Incompatible With Secondary Licenses" Notice
 
   This Source Code Form is "Incompatible With Secondary Licenses", as
   defined by the Mozilla Public License, v. 2.0.
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.0;
+
+import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
+import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
+
+contract OracleMatrixToken is ERC20, ReentrancyGuard {
+    address private owner;
+    address private aiDevelopmentWallet;
+    uint256 public sellPenaltyTime = 5 days;
+    mapping(address => uint256) private lastBuyTime;
+
+    constructor(address _aiDevelopmentWallet) ERC20("OracleMatrixToken", "OMX") {
+        owner = msg.sender;
+        aiDevelopmentWallet = _aiDevelopmentWallet;
+    }
+
+    function buyToken(address recipient, uint256 amount) public {
+        // Implement buy logic, including time tracking for penalties
+        lastBuyTime[recipient] = block.timestamp;
+    }
+
+    function sellToken(address recipient, uint256 amount) public {
+        require(block.timestamp > lastBuyTime[msg.sender] + sellPenaltyTime, "Selling incurs a penalty");
+        // Implement sell logic, including penalties and rewards distribution
+    }
+
+    // Additional functions for transaction fees, burning, and penalties
+}
+# This would be part of your backend service, not directly in the blockchain
+import someAIModelLibrary
+
+class ScamDetector:
+    def __init__(self):
+        self.model = someAIModelLibrary.loadModel('path/to/model')
+
+    def predict(self, transactionData):
+        prediction = self.model.predict(transactionData)
+        return prediction > 0.5  # Assuming binary classification: 0 = not scam, 1 = scam
+import React, { useState } from 'react';
+import Web3 from 'web3';
+
+function App() {
+    const [web3, setWeb3] = useState(null);
+    
+    const connectWallet = async () => {
+        if (window.ethereum) {
+            const _web3 = new Web3(window.ethereum);
+            try {
+                await window.ethereum.enable();
+                setWeb3(_web3);
+            } catch (error) {
+                console.error("User denied account access");
+            }
+        } else if (window.web3) {
+            setWeb3(new Web3(window.web3.currentProvider));
+        } else {
+            console.log("Non-Ethereum browser detected. You should consider trying MetaMask!");
+        }
+    };
+
+    return (
+        <div>
+            <button onClick={connectWallet}>Connect Wallet</button>
+        </div>
+    );
+}
